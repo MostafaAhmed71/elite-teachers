@@ -1,0 +1,42 @@
+/* Keep RTL documents inside the viewport, including clipped form controls. */
+html { width: 100%; overflow-x: hidden; }
+body { width: 100%; max-width: 100%; overflow-x: hidden; }
+.form-wrap, #teacher-form { position: relative; }
+.brand, .brand > span:last-child { min-width: 0; }
+
+@media (max-width: 760px) {
+  .topbar { height: auto; min-height: 78px; padding: 14px 18px; }
+  .brand { font-size: clamp(12px, 3.6vw, 16px); }
+  .brand-icon { flex: 0 0 40px; }
+  .brand small { font-size: 10px; }
+  .layout { width: calc(100% - 24px); margin: 14px 12px 20px; }
+  .intro { padding: 16px 20px; }
+  .intro h1 { font-size: 18px; line-height: 1.5; letter-spacing: 0; margin: 8px 0; }
+  .intro h1 em { font-size: 17px; display: block; margin: 0; }
+  .intro > p { display: none; }
+  .journey { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 14px; }
+  .journey li { min-width: 0; text-align: center; }
+  .journey span { font-size: 10px; line-height: 1.7; }
+  .journey b { width: 30px; height: 30px; }
+  .form-wrap { width: 100%; padding: 23px 20px; }
+  .form-top { font-size: 10px; gap: 8px; }
+  .section-sub { line-height: 1.9; }
+  .field-grid { grid-template-columns: minmax(0, 1fr); gap: 17px; }
+  .field input, .field select { height: 52px; border-radius: 10px; font-size: 16px; }
+  .hint, .required-note { font-size: 11px; line-height: 1.9; }
+  .actions { gap: 12px; margin-top: 25px; padding-top: 20px; }
+  .actions .primary { flex: 1; min-height: 50px; font-size: 15px; }
+  .actions .secondary { min-height: 50px; font-size: 14px; }
+  .consent { font-size: 12px; line-height: 1.9; }
+  .review-heading h3, dl > div { font-size: 11px; }
+  dd { overflow-wrap: anywhere; }
+  .page-footer { padding: 0 20px; }
+  .admin-tools button { min-height: 48px; }
+  .details { max-height: 85dvh; overflow-y: auto; }
+}
+
+@media (max-width: 350px) {
+  .topbar { padding-inline: 12px; }
+  .intro, .form-wrap { padding-inline: 16px; }
+  .journey span { font-size: 9px; }
+}
