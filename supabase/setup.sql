@@ -6,7 +6,7 @@ create table if not exists public.teacher_submissions (
  created_at timestamptz not null default now(),
  education_department text not null check (length(trim(education_department)) between 1 and 200),
  school_name text not null check (length(trim(school_name)) between 1 and 200),
- ministry_number text not null check (ministry_number ~ '^[0-9]{1,20}$'),
+ ministry_number text not null check (ministry_number = '' or ministry_number ~ '^[0-9]{1,20}$'),
  stage text not null check (stage in ('رياض أطفال','ابتدائي','متوسط','ثانوي')),
  full_name text not null check (length(trim(full_name)) between 5 and 200),
  gender text not null check (gender in ('ذكر','أنثى')),

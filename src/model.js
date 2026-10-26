@@ -4,7 +4,7 @@ export const departments = ['الرياض','القصيم','المنطقة الش
 export const fields = [
  {key:'education_department',label:'إدارة التعليم',options:departments,default:'الحدود الشمالية',section:0},
  {key:'school_name',label:'اسم المدرسة',default:'مدارس نخبة الشمال الأهلية',section:0},
- {key:'ministry_number',label:'الرقم الوزاري',section:0,inputmode:'numeric',hint:'الرقم الوزاري للمدرسة حسب المرحلة الدراسية.'},
+ {key:'ministry_number',label:'الرقم الوزاري',optional:true,section:0,inputmode:'numeric',hint:'الرقم الوزاري للمدرسة حسب المرحلة الدراسية.'},
  {key:'stage',label:'المرحلة الدراسية',options:stages,section:0},
  {key:'full_name',label:'اسم شاغل الوظيفة التعليمية',section:1,hint:'الاسم كاملًا كما في الهوية أو الإقامة.'},
  {key:'gender',label:'الجنس',options:['ذكر','أنثى'],section:1},
