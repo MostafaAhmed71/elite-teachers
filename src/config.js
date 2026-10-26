@@ -1,0 +1,3 @@
+// Public application credentials. Database permissions are enforced by RLS.
+export const SUPABASE_URL = 'https://nsdcxjuyylsjdouljpie.supabase.co';
+export const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5zZGN4anV5eWxzamRvdWxqcGllIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5OTcxNTQsImV4cCI6MjEwODU3MzE1NH0.mkdjbOiIvaMa0qMoQTxneUjomOHtLyRITlCfr8vtxzE';

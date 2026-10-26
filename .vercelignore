@@ -1,0 +1,7 @@
+supabase/
+tests/
+scripts/
+README.md
+.git/
+.sites-runtime/
+.openai/
