@@ -4,6 +4,10 @@ body { width: 100%; max-width: 100%; overflow-x: hidden; }
 .form-wrap, #teacher-form { position: relative; }
 .brand, .brand > span:last-child { min-width: 0; }
 .ltr-value { direction: ltr; unicode-bidi: isolate; text-align: left; }
+.license-toggle { grid-column: 1 / -1; border: 1px solid #dce5ef; background: #f6f9fc; border-radius: 10px; padding: 15px; }
+.license-toggle .consent { font-size: 13px; color: #244a6b; font-weight: 700; }
+.license-toggle .hint { display: block; margin-right: 28px; }
+.license-scores { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px 20px; }
 
 @media (max-width: 760px) {
   .topbar { height: auto; min-height: 78px; padding: 14px 18px; }
@@ -23,6 +27,7 @@ body { width: 100%; max-width: 100%; overflow-x: hidden; }
   .form-top { font-size: 10px; gap: 8px; }
   .section-sub { line-height: 1.9; }
   .field-grid { grid-template-columns: minmax(0, 1fr); gap: 17px; }
+  .license-scores { grid-template-columns: minmax(0, 1fr); gap: 17px; }
   .field input, .field select { height: 52px; border-radius: 10px; font-size: 16px; }
   .hint, .required-note { font-size: 11px; line-height: 1.9; }
   .actions { gap: 12px; margin-top: 25px; padding-top: 20px; }

@@ -1,4 +1,4 @@
-export const stages = ['رياض أطفال','ابتدائي','متوسط','ثانوي'];
+export const stages = ['عالمي','ابتدائي','متوسط','ثانوي'];
 export const ranks = ['مساعد معلم','معلم ممارس','معلم متقدم','معلم خبير','لا يوجد'];
 export const departments = ['الرياض','القصيم','المنطقة الشرقية','الأحساء','تبوك','الحدود الشمالية','حائل','المدينة المنورة','جدة','مكة المكرمة','الطائف','عسير','جازان','نجران','الجوف','الباحة'];
 export const fields = [
@@ -15,7 +15,7 @@ export const fields = [
  {key:'email',label:'البريد الالكتروني',section:1,type:'email',placeholder:'name@example.com'},
  {key:'job_title',label:'المسمى الوظيفي',section:2,list:['معلم','مدير مدرسة','وكيل مدرسة','موجه طلابي','رائد نشاط','محضر مختبر','أمين مصادر تعلم']},
  {key:'national_id',label:'السجل المدني/ رقم الإقامة',section:1,inputmode:'numeric',hint:'10 أرقام، دون مسافات.'},
- {key:'teacher_rank',label:'رتبة المعلم',options:ranks,section:2},
+ {key:'teacher_rank',label:'رتبة المعلم',formLabel:'رتبة المعلم (حسب الرخصة المهنية للحاصلين عليها)',options:ranks,section:2,optional:true,hint:'للحاصلين على الرخصة المهنية فقط. إذا لم تحصل عليها، اترك الرتبة دون اختيار.'},
  {key:'general_score',label:'درجة اختبار الرخصة المهنية التربوي العام',section:2,score:true,optional:true,hint:'من 0 إلى 100. اتركها فارغة إذا لم تختبر.'},
  {key:'specialist_score',label:'درجة اختبار الرخصة المهنية التخصصي',section:2,score:true,optional:true,hint:'من 0 إلى 100. اتركها فارغة إذا لم تختبر.'},
 ];
@@ -29,6 +29,7 @@ export function normalize(raw){
  const out={};
  for(const f of fields){let v=String(raw[f.key]??'').trim();if(['mobile','national_id','ministry_number','general_score','specialist_score'].includes(f.key))v=digits(v);if(['mobile','national_id'].includes(f.key))v=v.replace(/[\s()-]/g,'');out[f.key]=f.score?(v===''?null:Number(v)):v;}
  out.mobile=normalizeMobile(out.mobile);
+ if(!out.teacher_rank)out.teacher_rank='لا يوجد';
  return out;
 }
 export function validate(raw){

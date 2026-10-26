@@ -7,7 +7,7 @@ create table if not exists public.teacher_submissions (
  education_department text not null check (length(trim(education_department)) between 1 and 200),
  school_name text not null check (length(trim(school_name)) between 1 and 200),
  ministry_number text not null check (ministry_number = '' or ministry_number ~ '^[0-9]{1,20}$'),
- stage text not null check (stage in ('رياض أطفال','ابتدائي','متوسط','ثانوي')),
+ stage text not null check (stage in ('عالمي','ابتدائي','متوسط','ثانوي')),
  full_name text not null check (length(trim(full_name)) between 5 and 200),
  gender text not null check (gender in ('ذكر','أنثى')),
  nationality text not null check (length(trim(nationality)) between 1 and 200),
@@ -24,6 +24,9 @@ create table if not exists public.teacher_submissions (
 create table if not exists public.teacher_form_admins (
  user_id uuid primary key references auth.users(id) on delete cascade
 );
+alter table public.teacher_submissions drop constraint if exists teacher_submissions_stage_check;
+alter table public.teacher_submissions add constraint teacher_submissions_stage_check
+ check (stage in ('عالمي','رياض أطفال','ابتدائي','متوسط','ثانوي'));
 -- Re-running setup also upgrades an existing required ministry-number constraint.
 alter table public.teacher_submissions drop constraint if exists teacher_submissions_ministry_number_check;
 alter table public.teacher_submissions add constraint teacher_submissions_ministry_number_check

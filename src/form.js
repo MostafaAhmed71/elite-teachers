@@ -1,7 +1,7 @@
 import {fields,validate,normalize,normalizeMobile} from './model.js';
 import {submitRecord} from './api.js';
 const form=document.querySelector('#teacher-form'),content=document.querySelector('#form-content'),next=document.querySelector('#next'),back=document.querySelector('#back'),status=document.querySelector('#status');
-let step=0,busy=false;const values=Object.fromEntries(fields.map(f=>[f.key,f.default??'']));
+let step=0,busy=false,hasLicense=false;const values=Object.fromEntries(fields.map(f=>[f.key,f.default??'']));
 const titles=['المدرسة والمرحلة','البيانات الشخصية','البيانات المهنية','مراجعة بياناتك'];
 const subs=['ابدأ بتحديد بيانات المدرسة والمرحلة التي تعمل بها.','أدخل بياناتك كما تظهر في الوثائق الرسمية.','حدّث بيانات وظيفتك ونتائج اختبارات الرخصة المهنية.','راجع البيانات التالية قبل إرسالها إلى إدارة المدرسة.'];
 function text(tag,value,cls){const el=document.createElement(tag);el.textContent=value;if(cls)el.className=cls;return el;}
@@ -12,22 +12,26 @@ function render(){
  document.querySelectorAll('.journey li').forEach((el,i)=>{el.classList.toggle('active',i===step);el.classList.toggle('done',i<step);});
  const h=text('h2',titles[step]);h.tabIndex=-1;content.append(h,text('p',subs[step],'section-sub'));
  if(step<3){const grid=text('div','','field-grid');for(const f of fields.filter(f=>f.section===step)){
- const wrap=text('div','','field');const label=text('label',f.label);label.htmlFor=f.key;if(!f.optional)label.append(text('span',' *','star'));else label.append(text('small',' (اختياري)'));
+ if(f.key==='general_score'){
+ const panel=text('div','','license-toggle');const label=text('label','','consent');const toggle=document.createElement('input');toggle.type='checkbox';toggle.id='has-license';toggle.checked=hasLicense;toggle.setAttribute('aria-controls','license-scores');toggle.setAttribute('aria-expanded',String(hasLicense));label.append(toggle,text('span','هل حصلت على الرخصة المهنية؟'));panel.append(label,text('small','فعّل هذا الخيار لإدخال درجتي اختبار الرخصة المهنية.','hint'));toggle.addEventListener('change',()=>{snapshot();hasLicense=toggle.checked;if(!hasLicense){values.general_score='';values.specialist_score='';}render();document.getElementById('has-license').focus({preventScroll:true});});grid.append(panel);
+ }
+ if(f.score&&!hasLicense)continue;
+ const wrap=text('div','','field');if(f.score)wrap.classList.add('license-score');const label=text('label',f.formLabel??f.label);label.htmlFor=f.key;if(!f.optional)label.append(text('span',' *','star'));else label.append(text('small',' (اختياري)'));
  const el=document.createElement(f.options?'select':'input');el.name=el.id=f.key;el.required=!f.optional;el.setAttribute('aria-describedby',f.key+'-hint '+f.key+'-error');
  if(f.options){el.append(new Option('اختر من القائمة',''));for(const option of f.options)el.append(new Option(option,option));}else{el.type=f.type??(f.score?'text':'text');el.maxLength=200;el.autocomplete={full_name:'name',email:'email',mobile:'tel',national_id:'off'}[f.key]??'off';if(f.placeholder)el.placeholder=f.placeholder;if(f.inputmode||f.score)el.inputMode=f.inputmode??'decimal';if(f.list){el.setAttribute('list',f.key+'-list');const list=document.createElement('datalist');list.id=f.key+'-list';for(const x of f.list)list.append(new Option(x,x));wrap.append(list);}}
  if(['mobile','email','national_id','ministry_number'].includes(f.key)||f.score)el.dir='ltr';el.value=values[f.key]??'';if(f.key==='mobile')el.addEventListener('blur',()=>{el.value=normalizeMobile(el.value);});
  el.addEventListener('input',()=>{el.removeAttribute('aria-invalid');document.getElementById(f.key+'-error').textContent='';});
  wrap.append(label,el);const hint=text('small',f.hint??'','hint');hint.id=f.key+'-hint';const error=text('small','','field-error');error.id=f.key+'-error';wrap.append(hint,error);grid.append(wrap);
- }content.append(grid);
+ }if(step===2){const scoreGroup=text('div','','license-scores');scoreGroup.id='license-scores';scoreGroup.hidden=!hasLicense;for(const field of [...grid.querySelectorAll('.license-score')])scoreGroup.append(field);grid.append(scoreGroup);}content.append(grid);
  }else{
- for(let s=0;s<3;s++){const group=text('div','','review-group');const head=text('div','','review-heading');const edit=text('button','تعديل','edit-button');edit.type='button';edit.addEventListener('click',()=>{step=s;render();focusHeading();});head.append(text('h3',titles[s]),edit);group.append(head);const dl=document.createElement('dl');for(const f of fields.filter(f=>f.section===s)){const row=document.createElement('div');const value=text('dd',String(normalize(values)[f.key]??'').trim()||(f.score?'لم يؤدِّ الاختبار':'غير محدد'));if(['mobile','email','national_id','ministry_number'].includes(f.key)){value.dir='ltr';value.className='ltr-value';}row.append(text('dt',f.label),value);dl.append(row);}group.append(dl);content.append(group);}
+ for(let s=0;s<3;s++){const group=text('div','','review-group');const head=text('div','','review-heading');const edit=text('button','تعديل','edit-button');edit.type='button';edit.addEventListener('click',()=>{step=s;render();focusHeading();});head.append(text('h3',titles[s]),edit);group.append(head);const dl=document.createElement('dl');for(const f of fields.filter(f=>f.section===s&&(!f.score||hasLicense))){const row=document.createElement('div');const value=text('dd',String(normalize(values)[f.key]??'').trim()||(f.score?'لم يؤدِّ الاختبار':'غير محدد'));if(['mobile','email','national_id','ministry_number'].includes(f.key)){value.dir='ltr';value.className='ltr-value';}row.append(text('dt',f.label),value);dl.append(row);}group.append(dl);content.append(group);}
  const consent=text('label','','consent');const cb=document.createElement('input');cb.type='checkbox';cb.id='consent';consent.append(cb,text('span','أقر بصحة البيانات المدخلة، وأوافق على استخدامها لتحديث سجلات المدرسة.'));content.append(consent);
  }
  next.innerHTML=step===3?'إرسال البيانات <span aria-hidden="true">✓</span>':'متابعة <span aria-hidden="true">←</span>';back.hidden=step===0;
 }
 function focusHeading(){content.querySelector('h2').focus({preventScroll:true});document.querySelector('.form-wrap').scrollIntoView({behavior:'smooth',block:'start'});}
 function errorsForStep(){snapshot();const {errors}=validate(values);let first;
- for(const f of fields.filter(f=>f.section===step)){const el=document.getElementById(f.key);document.getElementById(f.key+'-error').textContent=errors[f.key]??'';if(errors[f.key]){el.setAttribute('aria-invalid','true');first??=el;}}
+ for(const f of fields.filter(f=>f.section===step)){const el=document.getElementById(f.key);if(!el)continue;document.getElementById(f.key+'-error').textContent=errors[f.key]??'';if(errors[f.key]){el.setAttribute('aria-invalid','true');first??=el;}}
  if(first){first.focus();return false;}return true;}
 next.addEventListener('click',async()=>{
  if(busy)return;

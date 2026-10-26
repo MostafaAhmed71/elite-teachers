@@ -2,6 +2,7 @@ import {SUPABASE_URL,SUPABASE_KEY} from './config.js';
 export class ApiError extends Error {constructor(message,status,code,field){super(message);this.status=status;this.code=code;this.field=field;}}
 export function constraintError(data){
  const constraint=String(data?.message??'').match(/constraint "teacher_submissions_([a-z_]+)_check"/)?.[1];
+ if(constraint==='stage')return {field:constraint,message:'إعدادات قاعدة البيانات تحتاج إلى تحديث لقبول المرحلة «عالمي». يرجى مراجعة إدارة المدرسة.'};
  const labels={mobile:'رقم الجوال',email:'البريد الإلكتروني',national_id:'رقم الهوية أو الإقامة',teacher_rank:'رتبة المعلم',stage:'المرحلة الدراسية',gender:'الجنس',full_name:'الاسم',general_score:'درجة الاختبار العام',specialist_score:'درجة الاختبار التخصصي'};
  if(constraint==='ministry_number')return {field:constraint,message:'تعذر الحفظ لأن إعدادات قاعدة البيانات ما زالت تشترط الرقم الوزاري. يلزم أن تطبق إدارة المدرسة تحديث الحقل الاختياري؛ لا تحتاج إلى إدخال رقم غير صحيح.'};
  return {field:constraint,message:labels[constraint]?`قاعدة البيانات رفضت حقل ${labels[constraint]}. راجع قيمته ثم أعد الإرسال.`:'قاعدة البيانات رفضت أحد الحقول. تواصل مع إدارة المدرسة لمراجعة إعدادات النموذج.'};
