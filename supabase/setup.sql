@@ -24,6 +24,10 @@ create table if not exists public.teacher_submissions (
 create table if not exists public.teacher_form_admins (
  user_id uuid primary key references auth.users(id) on delete cascade
 );
+-- Re-running setup also upgrades an existing required ministry-number constraint.
+alter table public.teacher_submissions drop constraint if exists teacher_submissions_ministry_number_check;
+alter table public.teacher_submissions add constraint teacher_submissions_ministry_number_check
+ check (ministry_number = '' or ministry_number ~ '^[0-9]{1,20}$');
 alter table public.teacher_submissions enable row level security;
 alter table public.teacher_form_admins enable row level security;
 revoke all on public.teacher_submissions from anon,authenticated;

@@ -11,7 +11,7 @@ export const fields = [
  {key:'nationality',label:'الجنسية',section:1,list:['سعودي','مصري','أردني','سوري','سوداني','فلسطيني','يمني','تونسي']},
  {key:'qualification',label:'المؤهل',section:1,list:['بكالوريوس','ماجستير','دكتوراه','دبلوم','ثانوية عامة']},
  {key:'specialization',label:'التخصص',section:1},
- {key:'mobile',label:'الجوال',section:1,type:'tel',inputmode:'tel',placeholder:'05xxxxxxxx'},
+ {key:'mobile',label:'الجوال',section:1,type:'tel',inputmode:'tel',placeholder:'05xxxxxxxx',hint:'للجوال السعودي: 05xxxxxxxx أو +9665xxxxxxxx. يُحفظ بالصيغة 05xxxxxxxx.'},
  {key:'email',label:'البريد الالكتروني',section:1,type:'email',placeholder:'name@example.com'},
  {key:'job_title',label:'المسمى الوظيفي',section:2,list:['معلم','مدير مدرسة','وكيل مدرسة','موجه طلابي','رائد نشاط','محضر مختبر','أمين مصادر تعلم']},
  {key:'national_id',label:'السجل المدني/ رقم الإقامة',section:1,inputmode:'numeric',hint:'10 أرقام، دون مسافات.'},
@@ -20,9 +20,15 @@ export const fields = [
  {key:'specialist_score',label:'درجة اختبار الرخصة المهنية التخصصي',section:2,score:true,optional:true,hint:'من 0 إلى 100. اتركها فارغة إذا لم تختبر.'},
 ];
 export const digits = value => String(value ?? '').replace(/[٠-٩]/g,c=>String(c.charCodeAt(0)-1632)).replace(/[۰-۹]/g,c=>String(c.charCodeAt(0)-1776));
+export function normalizeMobile(value){
+ let v=digits(value).replace(/[\s()\-\u200e\u200f\u202a-\u202e\u2066-\u2069]/g,'');
+ if(/^(?:\+966|00966|966)5\d{8}$/.test(v))v='0'+v.replace(/^(?:\+966|00966|966)/,'');
+ return v;
+}
 export function normalize(raw){
  const out={};
  for(const f of fields){let v=String(raw[f.key]??'').trim();if(['mobile','national_id','ministry_number','general_score','specialist_score'].includes(f.key))v=digits(v);if(['mobile','national_id'].includes(f.key))v=v.replace(/[\s()-]/g,'');out[f.key]=f.score?(v===''?null:Number(v)):v;}
+ out.mobile=normalizeMobile(out.mobile);
  return out;
 }
 export function validate(raw){

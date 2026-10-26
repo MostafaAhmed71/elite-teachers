@@ -3,6 +3,7 @@ html { width: 100%; overflow-x: hidden; }
 body { width: 100%; max-width: 100%; overflow-x: hidden; }
 .form-wrap, #teacher-form { position: relative; }
 .brand, .brand > span:last-child { min-width: 0; }
+.ltr-value { direction: ltr; unicode-bidi: isolate; text-align: left; }
 
 @media (max-width: 760px) {
   .topbar { height: auto; min-height: 78px; padding: 14px 18px; }
